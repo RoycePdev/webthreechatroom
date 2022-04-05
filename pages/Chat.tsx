@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
 import MetaMaskOnboarding from '@metamask/onboarding'
-import { supabase } from './Supabase'
+import { supabase } from '../components/Supabase'
 import { ethers } from 'ethers';
 
 

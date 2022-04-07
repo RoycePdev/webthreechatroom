@@ -175,8 +175,8 @@ export default function Chat () {
 
     //Supabase messaging
     const [posts, setPosts] = useState<any[]>([])
-    const [post, setPost] = useState<any>({title:"", content: ""})
-    const {title, content} = post
+    const [post, setPost] = useState<any>({content: ""})
+    const {content} = post
     const dummy:any = useRef()
 
 
@@ -224,10 +224,10 @@ async function createPost() {
     await supabase
     .from('posts')
     .insert([
-        {title, content}
+        {content}
     ])
     .single()
-    setPost({title: "", content: ""})
+    setPost({content: ""})
     fetchPosts()
 
     console.log(window.scrollY)
@@ -290,7 +290,7 @@ console.log(name)
         <MainContainer>
             <Header>
             <ButtonContainer>
-            <Link href={myLink} passHref>  
+            <Link href={myLink} passHref>
                 <HomeLink>NOWPANEL</HomeLink>
             </Link>
                 <HeaderContainer>

@@ -12,8 +12,6 @@ declare const address: any
 declare const post: any
 
 
-
-
 const myLink= '/'
 const orange = '#f26024'
 const green = 'rgba(36,242,98,1)'
@@ -165,6 +163,20 @@ const Message= styled.div`
   }
 `
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export default function Chat () {
 
   //Metamask
@@ -175,10 +187,11 @@ export default function Chat () {
 
     //Supabase messaging
     const [posts, setPosts] = useState<any[]>([])
-    const [post, setPost] = useState<any>({content: ""})
-    const {content} = post
+    const [post, setPost] = useState<any>({ensname:"", content: ""})
+    const {ensname, content} = post
     const dummy:any = useRef()
 
+    console.log(posts)
 
     ///Ethers connect
     const [name, setName] = useState<any>([]);
@@ -194,7 +207,8 @@ export default function Chat () {
       console.log("connected")
       if (ens !== null) {
         setName(ens)
-        console.log("name")
+        setPost({ensname:ens , content: ""})
+        console.log(ens)
       } else {
         setName(address)
         console.log("address")
@@ -204,89 +218,87 @@ export default function Chat () {
       console.log("no wallett")
     }
   }
-console.log(name + "jello")
-
-
+  
+  
   //Supabase functions
-
+  
   useEffect(() => {
     fetchPosts()
-},[])
-
-async function fetchPosts() {
+  },[])
+  
+  async function fetchPosts() {
     const {data}:any = await supabase
     .from('posts')
     .select()
     setPosts(data)
-}
-
-async function createPost() {
+  }
+  
+  async function createPost() {
     await supabase
     .from('posts')
     .insert([
-        {content}
+      {ensname, content}
     ])
     .single()
-    setPost({content: ""})
+    setPost({ensname: ensname , content: ""})
     fetchPosts()
-
-    console.log(window.scrollY)
-    // setTimeout(() => {dummy.current.scrollIntoView({behavior: 'smooth'})}, 500)
-}
-
-//metamask functions
-
-    useEffect(() => {
-        fetchPosts()
-    },[])
-
-    useEffect(() => {
-        if (!onboarding.current) {
-          onboarding.current = new MetaMaskOnboarding();
-        }
-      }, []);
-
-      useEffect(() => {
-        if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-          if (name.length > 0) {
-            setButtonText(CONNECTED_TEXT);
-            setDisabled(true);
-            onboarding.current?.stopOnboarding();
-          } else {
-            setButtonText(CONNECT_TEXT);
-            setDisabled(false);
-          }
-        }
-      }, [name]);
-
-      useEffect(() => {
-        function handleNewAccounts(newAccounts: any) {
-          setName(name);
-        }
-        if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-          (window as any).ethereum
-            .request({ method: 'eth_requestAccounts' })
-            .then(handleNewAccounts);
-          (window as any).ethereum.on('accountsChanged', handleNewAccounts);
-          return () => {
-            (window as any).ethereum.removeListener('accountsChanged', handleNewAccounts);
-          };
-        }
-      }, []);
-
-      // const onClick = () => {
-      //   if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-      //     (window as any).ethereum
-      //       .request({ method: 'eth_requestAccounts' })
-      //       .then((newAccounts: any) => setAccounts(newAccounts));
-      //   } else {
-      //     onboarding.current?.startOnboarding();
-      //   }
-      // };
-
-console.log(name)
-  return (
-    <>
+        // setTimeout(() => {dummy.current.scrollIntoView({behavior: 'smooth'})}, 500)
+  }
+  
+  //metamask functions
+  
+  useEffect(() => {
+    fetchPosts()
+  },[])
+  
+  useEffect(() => {
+    if (!onboarding.current) {
+      onboarding.current = new MetaMaskOnboarding();
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (MetaMaskOnboarding.isMetaMaskInstalled()) {
+      if (name.length > 0) {
+        setButtonText(CONNECTED_TEXT);
+        setDisabled(true);
+        onboarding.current?.stopOnboarding();
+      } else {
+        setButtonText(CONNECT_TEXT);
+        setDisabled(false);
+      }
+    }
+  }, [name]);
+  
+  useEffect(() => {
+    function handleNewAccounts(newAccounts: any) {
+      setName(name);
+    }
+    if (MetaMaskOnboarding.isMetaMaskInstalled()) {
+      (window as any).ethereum
+      .request({ method: 'eth_requestAccounts' })
+      .then(handleNewAccounts);
+      (window as any).ethereum.on('accountsChanged', handleNewAccounts);
+      return () => {
+        (window as any).ethereum.removeListener('accountsChanged', handleNewAccounts);
+      };
+    }
+  }, []);
+  
+  // const onClick = () => {
+  //     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
+  //         (window as any).ethereum
+  //           .request({ method: 'eth_requestAccounts' })
+  //           .then((newAccounts: any) => setAccounts(newAccounts));
+  //       } else {
+  //           onboarding.current?.startOnboarding();
+  //         }
+  //       };
+        
+        console.log(ensname + content)
+        console.log(content)
+        return (
+          <>
         <MainContainer>
             <Header>
             <ButtonContainer>
@@ -305,7 +317,7 @@ console.log(name)
                     <div ref={dummy}></div>
                   {posts.slice().reverse().map(post => (
                 <Message key={post.id}>
-                    <p>{name}:</p>
+                    <p>{post.ensname}:</p>
                     <p>{post.content}</p>
                 </Message>
                  ))}

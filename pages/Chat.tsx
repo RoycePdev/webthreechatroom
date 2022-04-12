@@ -123,7 +123,6 @@ const ChatSendButton =  styled.button`
     cursor: pointer;
 `
 
-
 const AccountName = styled.h1`
     background: -webkit-linear-gradient(#c4db6b, #f26024);
     -webkit-background-clip: text;
@@ -224,12 +223,11 @@ export default function Chat () {
   }, [name]);
   
 
-
-
   //Supabase functions
   
   useEffect(() => {
     fetchPosts()
+    console.log("jello")
   },[])
   
   async function fetchPosts() {
@@ -237,6 +235,7 @@ export default function Chat () {
     .from('posts')
     .select()
     setPosts(data)
+    setPost({ensname:ensname , content: ""})
   }
 
   async function createPost() {
@@ -245,9 +244,9 @@ export default function Chat () {
     .insert([
       {ensname, content}
     ])
-    // .single()
+    .single()
     fetchPosts()
-        // setTimeout(() => {dummy.current.scrollIntoView({behavior: 'smooth'})}, 500)
+     setTimeout(() => {dummy.current.scrollIntoView({behavior: 'smooth'})}, 500)
   }
 
   useEffect(() => {
@@ -261,8 +260,8 @@ export default function Chat () {
       })
     })
     .subscribe()
-    fetchPosts()
-  },[posts.length])
+    console.log("doneer")
+  },[])
         
         return (
           <>

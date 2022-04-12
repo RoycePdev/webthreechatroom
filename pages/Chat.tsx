@@ -164,20 +164,8 @@ const Message= styled.div`
 `
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 export default function Chat () {
+
 
   //Metamask
     const onboarding = useRef<MetaMaskOnboarding>();
@@ -190,8 +178,6 @@ export default function Chat () {
     const [post, setPost] = useState<any>({ensname:"", content: ""})
     const {ensname, content} = post
     const dummy:any = useRef()
-
-    console.log(posts)
 
     ///Ethers connect
     const [name, setName] = useState<any>([]);
@@ -208,7 +194,6 @@ export default function Chat () {
       if (ens !== null) {
         setName(ens)
         setPost({ensname:ens , content: ""})
-        console.log(ens)
       } else {
         setName(address)
         console.log("address")
@@ -218,38 +203,9 @@ export default function Chat () {
       console.log("no wallett")
     }
   }
-  
-  
-  //Supabase functions
-  
-  useEffect(() => {
-    fetchPosts()
-  },[])
-  
-  async function fetchPosts() {
-    const {data}:any = await supabase
-    .from('posts')
-    .select()
-    setPosts(data)
-  }
-  
-  async function createPost() {
-    await supabase
-    .from('posts')
-    .insert([
-      {ensname, content}
-    ])
-    .single()
-    setPost({ensname: ensname , content: ""})
-    fetchPosts()
-        // setTimeout(() => {dummy.current.scrollIntoView({behavior: 'smooth'})}, 500)
-  }
-  
-  //metamask functions
-  
-  useEffect(() => {
-    fetchPosts()
-  },[])
+
+
+//Metamask onboarding
   
   useEffect(() => {
     if (!onboarding.current) {
@@ -270,33 +226,49 @@ export default function Chat () {
     }
   }, [name]);
   
-  useEffect(() => {
-    function handleNewAccounts(newAccounts: any) {
-      setName(name);
-    }
-    if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-      (window as any).ethereum
-      .request({ method: 'eth_requestAccounts' })
-      .then(handleNewAccounts);
-      (window as any).ethereum.on('accountsChanged', handleNewAccounts);
-      return () => {
-        (window as any).ethereum.removeListener('accountsChanged', handleNewAccounts);
-      };
-    }
-  }, []);
+
+
+
+  //Supabase functions
   
-  // const onClick = () => {
-  //     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-  //         (window as any).ethereum
-  //           .request({ method: 'eth_requestAccounts' })
-  //           .then((newAccounts: any) => setAccounts(newAccounts));
-  //       } else {
-  //           onboarding.current?.startOnboarding();
-  //         }
-  //       };
+  useEffect(() => {
+    fetchPosts()
+  },[])
+  
+  async function fetchPosts() {
+    const {data}:any = await supabase
+    .from('posts')
+    .select()
+    setPosts(data)
+  }
+
+  async function createPost() {
+    await supabase
+    .from('posts')
+    .insert([
+      {ensname, content}
+    ])
+    // .single()
+    fetchPosts()
+        // setTimeout(() => {dummy.current.scrollIntoView({behavior: 'smooth'})}, 500)
+  }
+
+  useEffect(() => {
+    console.log("weeee")
+    supabase
+    .from('*')
+    .on('*', payload => {
+      const newPost = payload.new
+      console.log("Change Password yayayaya", payload)
+      setPosts((posts) => {
+        const newPosts= [...posts, newPost]
+        return newPosts
+      })
+    })
+    .subscribe()
+    fetchPosts()
+  },)
         
-        console.log(ensname + content)
-        console.log(content)
         return (
           <>
         <MainContainer>
@@ -333,7 +305,6 @@ export default function Chat () {
                 </ChatBox>
             </ChatBoxBackground>
         </MainContainer>
-   
    </>
   )
 }

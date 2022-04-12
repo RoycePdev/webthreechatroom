@@ -190,17 +190,14 @@ export default function Chat () {
       const signer = provider.getSigner()
       const address = await signer.getAddress()
       const ens = await provider.lookupAddress(address);
-      console.log("connected")
       if (ens !== null) {
         setName(ens)
         setPost({ensname:ens , content: ""})
       } else {
         setName(address)
-        console.log("address")
       }
     } else {
       alert('no wallet detected!')
-      console.log("no wallett")
     }
   }
 
@@ -254,12 +251,10 @@ export default function Chat () {
   }
 
   useEffect(() => {
-    console.log("weeee")
     supabase
     .from('*')
     .on('*', payload => {
       const newPost = payload.new
-      console.log("Change Password yayayaya", payload)
       setPosts((posts) => {
         const newPosts= [...posts, newPost]
         return newPosts

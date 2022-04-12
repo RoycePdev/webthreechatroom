@@ -267,7 +267,7 @@ export default function Chat () {
     })
     .subscribe()
     fetchPosts()
-  },)
+  },[posts.length])
         
         return (
           <>

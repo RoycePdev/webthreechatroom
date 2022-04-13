@@ -262,7 +262,15 @@ export default function Chat () {
     .subscribe()
     console.log("doneer")
   },[])
-        
+
+
+
+// When users hit enter
+
+ function handleKeyPress (e:any) {
+  e.code === "Enter" && createPost()
+ }
+
         return (
           <>
         <MainContainer>
@@ -289,8 +297,9 @@ export default function Chat () {
                  ))}
                   </MessagesList>
                     <InputButtonContainer>
-                        <ChatSendButton onClick={createPost}>Send</ChatSendButton>
+                        <ChatSendButton onClick={createPost} >Send</ChatSendButton>
                         <ChatInput 
+                        onKeyDown={handleKeyPress}
                         placeholder="Send a fun message..."
                         value={content}
                         onChange={e => setPost({...post, content: e.target.value})}>
